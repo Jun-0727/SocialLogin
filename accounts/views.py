@@ -2,16 +2,15 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.http import JsonResponse
 import requests
-
-KAKAO_REST_API_KEY = 'e5e5116bb7a28a2a0168bb43e8c6615a'
-KAKAO_CALLBACK_URI = 'http://127.0.0.1:8000/accounts/kakao/callback/'
+# CLIENT_ID: REST_API KEY, REDIRECT_URI: CALLBACK_URI
+from my_setting import CLIENT_ID, REDIRECT_URI
 
 class KakaoSignInView(View):
     def get(self, request):
         kakao_auth_api = 'https://kauth.kakao.com/oauth/authorize?response_type=code'
         
         return redirect(
-            f'{kakao_auth_api}&client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_CALLBACK_URI}'
+            f'{kakao_auth_api}&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}'
         )
 
 
@@ -22,7 +21,7 @@ class KakaoSignInCallBackView(View):
 
         # --- 토큰 받아오기 --- #
         token_request = requests.post(
-            f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={KAKAO_REST_API_KEY}&redirect_uri={KAKAO_CALLBACK_URI}&code={code}"
+            f"https://kauth.kakao.com/oauth/token?grant_type=authorization_code&client_id={CLIENT_ID}&redirect_uri={REDIRECT_URI}&code={code}"
         )
         token_json = token_request.json()
         access_token = token_json.get("access_token")
